@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elison Arley | SRE & Observability Strategy</title>
+    <title>Elison Arley | SRE & Estratégia de Observabilidade</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -12,6 +12,9 @@
             --bg-deep: #020617;
             --card-bg: rgba(15, 23, 42, 0.7);
             --accent: #38bdf8;
+            --zabbix-red: #e45959;
+            --zabbix-orange: #f69e5d;
+            --zabbix-green: #59db8f;
         }
         body { 
             background-color: var(--bg-deep); 
@@ -26,125 +29,118 @@
             border: 1px solid rgba(56, 189, 248, 0.1);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .glass-panel:hover {
-            border-color: var(--accent);
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px -20px rgba(0,0,0,0.5);
-        }
 
         .hero-gradient {
             background: radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.1) 0%, transparent 50%);
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 12px;
-            border-radius: 9999px;
-            background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border: 1px solid rgba(16, 185, 129, 0.2);
-        }
-
-        .timeline-node {
-            position: relative;
-            padding-left: 2rem;
-            border-left: 2px solid #1e293b;
-        }
-        .timeline-node::before {
-            content: '';
-            position: absolute;
-            left: -7px;
-            top: 0;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--accent);
-            box-shadow: 0 0 10px var(--accent);
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
             transition: all 0.3s ease;
         }
-        .btn-primary:hover {
-            filter: brightness(1.1);
-            transform: scale(1.02);
+
+        .dash-card {
+            background: #111827;
+            border: 1px solid #374151;
+            border-radius: 4px;
+        }
+        .severity-high { background-color: var(--zabbix-red); color: white; }
+        .severity-average { background-color: var(--zabbix-orange); color: white; }
+        
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .animate-pulse-soft { animation: pulse-soft 2s infinite; }
+
+        .chart-line {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: draw 3s forwards;
+            transition: d 1s ease;
+        }
+        @keyframes draw { to { stroke-dashoffset: 0; } }
+
+        .stack-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px -10px rgba(56, 189, 248, 0.2);
         }
 
-        /* Scanline effect */
-        .scanline {
-            width: 100%;
-            height: 100px;
-            z-index: 10;
-            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(56, 189, 248, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
-            opacity: 0.1;
-            position: absolute;
-            bottom: 100%;
-            animation: scanline 10s linear infinite;
+        .profile-blob {
+            background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: blob 8s infinite alternate;
         }
-        @keyframes scanline {
-            0% { bottom: 100%; }
-            100% { bottom: -100%; }
+        @keyframes blob {
+            0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            100% { border-radius: 50% 50% 30% 70% / 50% 40% 60% 50%; }
         }
     </style>
 </head>
 <body class="antialiased overflow-x-hidden">
 
-    <!-- Navigation -->
+    <!-- Navegação -->
     <nav class="fixed w-full z-50 top-0 glass-panel border-none rounded-none border-b border-slate-800 py-4 px-6">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-2">
                 <div class="w-8 h-8 bg-blue-500 rounded flex items-center justify-center font-bold text-white italic">EA</div>
-                <span class="font-bold tracking-tight hidden sm:block uppercase text-sm">Operations Engineering</span>
+                <span class="font-bold tracking-tight hidden sm:block uppercase text-sm">Engenharia de Operações</span>
             </div>
             <div class="flex gap-6 text-sm font-medium text-slate-400">
-                <a href="#about" class="hover:text-blue-400 transition">About</a>
-                <a href="#stack" class="hover:text-blue-400 transition">Stack</a>
-                <a href="#experience" class="hover:text-blue-400 transition">Experience</a>
-                <a href="mailto:elison@yahoo.com" class="text-blue-400 hover:text-white transition">Contact</a>
+                <a href="#about" class="hover:text-blue-400 transition">Sobre</a>
+                <a href="#monitoring" class="hover:text-blue-400 transition">Monitoramento</a>
+                <a href="#stacks" class="hover:text-blue-400 transition">Tecnologias</a>
+                <a href="#experience" class="hover:text-blue-400 transition">Experiência</a>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="relative pt-32 pb-20 px-6 hero-gradient min-h-[80vh] flex items-center">
-        <div class="scanline"></div>
-        <div class="max-w-5xl mx-auto grid md:grid-cols-12 gap-12 items-center">
-            <div class="md:col-span-8">
-                <div class="status-badge mb-6">
-                    <span class="relative flex h-2 w-2 mr-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                    </span>
-                    Available for SRE & Cloud Challenges
+    <section id="about" class="relative pt-32 pb-20 px-6 hero-gradient min-h-[85vh] flex items-center">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-12 gap-12 items-center">
+            <div class="md:col-span-7 lg:col-span-8 order-2 md:order-1">
+                <div class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-xs font-bold mb-6">
+                    <span class="w-2 h-2 bg-emerald-500 rounded-full mr-2 animate-pulse"></span>
+                    SRE & Estratégia de Observabilidade
                 </div>
                 <h1 class="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight">
-                    Resiliência Digital & <br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Observabilidade.</span>
+                    Elison Arley.<br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">Confiabilidade & NOC.</span>
                 </h1>
                 <p class="text-xl text-slate-400 mb-10 max-w-2xl leading-relaxed">
-                    Especialista em sustentação de ambientes de alta disponibilidade, focado na transição para <strong class="text-slate-200">SRE na AWS</strong>. Transformo métricas brutas em inteligência de negócio através de automação e monitoramento proativo.
+                    Mais de 15 anos transformando infraestruturas complexas em sistemas resilientes através de <strong class="text-slate-200">Observabilidade Proativa</strong> e gestão estratégica de ativos.
                 </p>
                 
                 <div class="flex flex-wrap gap-4">
                     <a href="mailto:elison@yahoo.com" class="btn-primary px-8 py-4 rounded-lg font-bold shadow-xl shadow-blue-500/20 flex items-center">
-                        <i class="fas fa-paper-plane mr-3"></i> Get in touch
+                        <i class="fas fa-envelope mr-3"></i> Falar com Elison
                     </a>
-                    <div class="flex items-center gap-4 px-6 py-4 bg-slate-900/50 rounded-lg border border-slate-800 text-slate-300">
+                    <a href="https://linkedin.com/in/elisonarley" target="_blank" class="flex items-center gap-4 px-6 py-4 bg-slate-900/50 rounded-lg border border-slate-800 text-slate-300 hover:text-white transition">
                         <i class="fab fa-linkedin text-xl"></i>
-                        <a href="https://linkedin.com/in/elisonarley" target="_blank" class="hover:text-white transition">linkedin.com/in/elisonarley</a>
-                    </div>
+                        <span>LinkedIn</span>
+                    </a>
                 </div>
             </div>
-            <div class="md:col-span-4 flex justify-center">
-                <div class="relative group">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
-                    <img src="https://media.licdn.com/dms/image/v2/D4D03AQExHxvhbIbE5Q/profile-displayphoto-scale_200_200/B4DZrw8xI6IEAY-/0/1764979055429?e=1767830400&v=beta&t=Q34z8p9KuSRoahu6SU3iP_OBGnRN5xyICx7dKk9o5S8" 
-                         alt="Elison Arley" 
-                         class="relative w-64 h-64 rounded-full object-cover grayscale hover:grayscale-0 transition-all duration-500 border-4 border-slate-900 shadow-2xl">
+
+            <!-- Coluna da Foto -->
+            <div class="md:col-span-5 lg:col-span-4 order-1 md:order-2 flex justify-center">
+                <div class="relative w-64 h-64 md:w-80 md:h-80">
+                    <div class="profile-blob absolute inset-0 opacity-20 blur-2xl"></div>
+                    <div class="relative w-full h-full overflow-hidden border-2 border-blue-500/30 rounded-[30%_70%_70%_30%/30%_30%_70%_70%] shadow-2xl shadow-blue-500/10">
+                        <img src="https://media.licdn.com/dms/image/v2/D4D03AQExHxvhbIbE5Q/profile-displayphoto-scale_200_200/B4DZrw8xI6IEAY-/0/1764979055429?e=1767830400&v=beta&t=Q34z8p9KuSRoahu6SU3iP_OBGnRN5xyICx7dKk9o5S8" 
+                             alt="Elison Arley" 
+                             class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 ease-in-out scale-100">
+                    </div>
+                    <div class="absolute -bottom-4 -right-4 glass-panel p-4 rounded-xl border-blue-500/50 shadow-lg animate-bounce duration-[3000ms]">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-award text-amber-500 text-xl"></i>
+                            <div>
+                                <p class="text-[10px] text-slate-400 uppercase font-bold">Experiência</p>
+                                <p class="text-sm font-bold text-white">15+ Anos</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -152,256 +148,257 @@
 
     <main class="max-w-7xl mx-auto px-6 py-20">
         
-        <!-- Summary Stats -->
-        <div id="about" class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-32">
-            <div class="glass-panel p-6 rounded-2xl text-center">
-                <div class="text-3xl font-bold text-white mb-1">15+</div>
-                <div class="text-xs uppercase tracking-widest text-slate-500 font-bold">Years Experience</div>
-            </div>
-            <div class="glass-panel p-6 rounded-2xl text-center">
-                <div class="text-3xl font-bold text-blue-400 mb-1">99.9%</div>
-                <div class="text-xs uppercase tracking-widest text-slate-500 font-bold">Uptime Focus</div>
-            </div>
-            <div class="glass-panel p-6 rounded-2xl text-center">
-                <div class="text-3xl font-bold text-white mb-1">400+</div>
-                <div class="text-xs uppercase tracking-widest text-slate-500 font-bold">Servers Managed</div>
-            </div>
-            <div class="glass-panel p-6 rounded-2xl text-center">
-                <div class="text-3xl font-bold text-blue-400 mb-1">SRE</div>
-                <div class="text-xs uppercase tracking-widest text-slate-500 font-bold">Current Focus</div>
-            </div>
-        </div>
-
-        <!-- Tech Ecosystem -->
-        <section id="stack" class="mb-32">
-            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
-                <div>
-                    <h2 class="text-sm font-mono text-blue-500 uppercase tracking-tighter mb-2">// Observability Stack</h2>
-                    <h3 class="text-3xl font-bold text-white">Ecossistema de Tecnologia</h3>
-                </div>
-                <p class="text-slate-400 max-w-md text-sm">Integração de ferramentas para garantir visibilidade total da infraestrutura ao negócio.</p>
+        <!-- MONITORING SECTION -->
+        <section id="monitoring" class="mb-32">
+            <div class="mb-12">
+                <h2 class="text-sm font-mono text-blue-500 uppercase tracking-widest mb-2">// Observabilidade em Tempo Real</h2>
+                <h3 class="text-3xl font-bold text-white">Ecossistema de Monitoramento</h3>
+                <p class="text-slate-400 mt-4 max-w-2xl">Gestão ativa de infraestrutura híbrida com monitoramento de disponibilidade, latência e saúde de serviços críticos.</p>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Visibility -->
-                <div class="glass-panel rounded-2xl p-8 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-4 opacity-10">
-                        <i class="fas fa-chart-line text-6xl"></i>
+            <!-- Dashboard Container -->
+            <div class="grid lg:grid-cols-12 gap-6 bg-slate-900/50 p-4 rounded-xl border border-slate-800 shadow-2xl">
+                <!-- Coluna de Problemas -->
+                <div class="lg:col-span-8 space-y-6">
+                    <div class="dash-card overflow-hidden">
+                        <div class="bg-slate-800 px-4 py-2 flex justify-between items-center border-b border-slate-700">
+                            <span class="text-xs font-bold text-slate-300 flex items-center">
+                                <i class="fas fa-exclamation-triangle mr-2 text-amber-500"></i> Problemas Ativos
+                            </span>
+                            <span id="update-timer" class="text-[10px] text-slate-500 font-mono italic">Live sync...</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-slate-900 text-slate-500 uppercase font-mono">
+                                    <tr>
+                                        <th class="px-4 py-3 border-b border-slate-800">Severidade</th>
+                                        <th class="px-4 py-3 border-b border-slate-800">Tempo</th>
+                                        <th class="px-4 py-3 border-b border-slate-800">Host</th>
+                                        <th class="px-4 py-3 border-b border-slate-800">Mensagem</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="problem-table" class="text-slate-300 font-mono">
+                                    <!-- Dinâmico -->
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <h4 class="text-xl font-bold text-white mb-6 flex items-center">
-                        <span class="w-8 h-8 rounded bg-orange-500/20 text-orange-500 flex items-center justify-center mr-3 text-sm">01</span>
-                        Visibility
-                    </h4>
-                    <ul class="space-y-4 text-slate-400">
-                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-blue-500 text-xs"></i> Zabbix Enterprise Monitoring</li>
-                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-blue-500 text-xs"></i> Grafana Visualization</li>
-                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-blue-500 text-xs"></i> Instana & Dynatrace APM</li>
-                    </ul>
-                </div>
 
-                <!-- Reliability -->
-                <div class="glass-panel rounded-2xl p-8 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-4 opacity-10">
-                        <i class="fas fa-server text-6xl"></i>
+                    <div class="dash-card p-6 min-h-[250px] relative overflow-hidden">
+                         <div class="flex justify-between items-center mb-6">
+                            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Latência de Rede (AWS Direct Connect)</h4>
+                            <div class="flex gap-4 text-[10px] font-mono">
+                                <span class="flex items-center text-blue-400"><span class="w-2 h-2 bg-blue-400 rounded-full mr-1"></span> Inbound</span>
+                                <span class="flex items-center text-emerald-400"><span class="w-2 h-2 bg-emerald-400 rounded-full mr-1"></span> Outbound</span>
+                            </div>
+                         </div>
+                         <div class="relative h-32 w-full mt-4">
+                            <svg id="live-chart" class="w-full h-full" viewBox="0 0 1000 100" preserveAspectRatio="none">
+                                <path id="path-inbound" class="chart-line" d="M0,80 L1000,80" fill="none" stroke="#38bdf8" stroke-width="2" />
+                                <path id="path-outbound" class="chart-line" d="M0,90 L1000,90" fill="none" stroke="#10b981" stroke-width="2" />
+                            </svg>
+                         </div>
                     </div>
-                    <h4 class="text-xl font-bold text-white mb-6 flex items-center">
-                        <span class="w-8 h-8 rounded bg-blue-500/20 text-blue-500 flex items-center justify-center mr-3 text-sm">02</span>
-                        Reliability
-                    </h4>
-                    <ul class="space-y-4 text-slate-400">
-                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-blue-500 text-xs"></i> AWS Foundation (EC2, S3, IAM)</li>
-                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-blue-500 text-xs"></i> Linux Administration (RHEL)</li>
-                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-blue-500 text-xs"></i> VMware & Hyper-V Virtualization</li>
-                    </ul>
                 </div>
 
-                <!-- Processes -->
-                <div class="glass-panel rounded-2xl p-8 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-4 opacity-10">
-                        <i class="fas fa-sync text-6xl"></i>
+                <!-- Stats Cards -->
+                <div class="lg:col-span-4 space-y-4">
+                    <div class="dash-card p-5 bg-gradient-to-br from-slate-900 to-slate-800 border-l-4 border-l-emerald-500">
+                        <p class="text-[10px] font-mono text-slate-500 mb-1 uppercase">SLA Global</p>
+                        <div class="flex justify-between items-end">
+                            <h5 class="text-3xl font-black text-white">99.98%</h5>
+                            <span class="text-emerald-500 text-xs font-bold mb-1"><i class="fas fa-caret-up mr-1"></i>0.02%</span>
+                        </div>
                     </div>
-                    <h4 class="text-xl font-bold text-white mb-6 flex items-center">
-                        <span class="w-8 h-8 rounded bg-emerald-500/20 text-emerald-500 flex items-center justify-center mr-3 text-sm">03</span>
-                        Governance
-                    </h4>
-                    <ul class="space-y-4 text-slate-400">
-                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-blue-500 text-xs"></i> ITIL V3 Framework</li>
-                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-blue-500 text-xs"></i> SLA & SLI Management</li>
-                        <li class="flex items-center gap-3"><i class="fas fa-check-circle text-blue-500 text-xs"></i> Crisis Management (Ticket Manager)</li>
-                    </ul>
+
+                    <div class="dash-card p-5 bg-slate-900 border-l-4 border-l-blue-500">
+                        <p class="text-[10px] font-mono text-slate-500 mb-1 uppercase">Tickets Mensais</p>
+                        <div class="flex justify-between items-end">
+                            <h5 class="text-3xl font-black text-white">850+</h5>
+                            <span class="text-blue-400 text-xs font-bold mb-1">Média Mensal</span>
+                        </div>
+                    </div>
+
+                    <div class="dash-card p-5 bg-slate-950 border-dashed border-slate-700 overflow-hidden">
+                        <div class="flex items-center gap-3 text-blue-400 mb-4">
+                            <i class="fas fa-microchip animate-pulse-soft"></i>
+                            <span class="text-[10px] font-bold uppercase tracking-widest">Logs de Automação</span>
+                        </div>
+                        <div id="log-container" class="text-[9px] font-mono text-slate-600 space-y-1 h-24 overflow-hidden flex flex-col-reverse">
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Experience -->
-        <section id="experience" class="mb-32">
-            <h2 class="text-sm font-mono text-blue-500 uppercase tracking-tighter mb-2">// Professional Lifecycle</h2>
-            <h3 class="text-3xl font-bold text-white mb-12">Trajetória Estratégica</h3>
+        <!-- STACK TECNOLÓGICA SECTION -->
+        <section id="stacks" class="mb-32">
+            <div class="mb-12">
+                <h2 class="text-sm font-mono text-blue-500 uppercase tracking-widest mb-2">// Stack de Monitoramento & ITSM</h2>
+                <h3 class="text-3xl font-bold text-white">Ferramental & Expertise</h3>
+                <p class="text-slate-400 mt-4 max-w-2xl">Ecossistema completo de monitoramento, APM e gestão de serviços (ITSM) utilizado no dia a dia.</p>
+            </div>
 
-            <div class="space-y-4">
-                <!-- Allied -->
-                <div class="glass-panel p-8 rounded-3xl">
-                    <div class="flex flex-col md:flex-row justify-between mb-6 gap-2">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6">
+                <!-- Zabbix -->
+                <div class="stack-card glass-panel p-6 rounded-xl text-center group">
+                    <div class="w-12 h-12 mx-auto mb-4 flex items-center justify-center bg-red-500/10 rounded-lg group-hover:bg-red-500/20 transition">
+                        <i class="fas fa-chart-area text-red-500 text-xl"></i>
+                    </div>
+                    <h4 class="font-bold text-white text-sm">Zabbix</h4>
+                    <p class="text-[10px] text-slate-500 uppercase mt-1">Infra Monitoring</p>
+                </div>
+                <!-- Grafana -->
+                <div class="stack-card glass-panel p-6 rounded-xl text-center group">
+                    <div class="w-12 h-12 mx-auto mb-4 flex items-center justify-center bg-orange-500/10 rounded-lg group-hover:bg-orange-500/20 transition">
+                        <i class="fas fa-tachometer-alt text-orange-500 text-xl"></i>
+                    </div>
+                    <h4 class="font-bold text-white text-sm">Grafana</h4>
+                    <p class="text-[10px] text-slate-500 uppercase mt-1">Observability UI</p>
+                </div>
+                <!-- Instana -->
+                <div class="stack-card glass-panel p-6 rounded-xl text-center group">
+                    <div class="w-12 h-12 mx-auto mb-4 flex items-center justify-center bg-blue-400/10 rounded-lg group-hover:bg-blue-400/20 transition">
+                        <i class="fas fa-project-diagram text-blue-400 text-xl"></i>
+                    </div>
+                    <h4 class="font-bold text-white text-sm">Instana</h4>
+                    <p class="text-[10px] text-slate-500 uppercase mt-1">APM & Trace</p>
+                </div>
+                <!-- Dynatrace -->
+                <div class="stack-card glass-panel p-6 rounded-xl text-center group">
+                    <div class="w-12 h-12 mx-auto mb-4 flex items-center justify-center bg-emerald-500/10 rounded-lg group-hover:bg-emerald-500/20 transition">
+                        <i class="fas fa-brain text-emerald-500 text-xl"></i>
+                    </div>
+                    <h4 class="font-bold text-white text-sm">Dynatrace</h4>
+                    <p class="text-[10px] text-slate-500 uppercase mt-1">AI-Powered Obs</p>
+                </div>
+                <!-- GLPI -->
+                <div class="stack-card glass-panel p-6 rounded-xl text-center group border-blue-500/30">
+                    <div class="w-12 h-12 mx-auto mb-4 flex items-center justify-center bg-blue-500/20 rounded-lg group-hover:bg-blue-500/40 transition">
+                        <i class="fas fa-tasks text-blue-300 text-xl"></i>
+                    </div>
+                    <h4 class="font-bold text-white text-sm">GLPI</h4>
+                    <p class="text-[10px] text-blue-400 uppercase mt-1 italic font-bold">ITSM & Assets</p>
+                </div>
+                <!-- WhatsUp Gold -->
+                <div class="stack-card glass-panel p-6 rounded-xl text-center group">
+                    <div class="w-12 h-12 mx-auto mb-4 flex items-center justify-center bg-amber-400/10 rounded-lg group-hover:bg-amber-400/20 transition">
+                        <i class="fas fa-network-wired text-amber-400 text-xl"></i>
+                    </div>
+                    <h4 class="font-bold text-white text-sm">WhatsUp Gold</h4>
+                    <p class="text-[10px] text-slate-500 uppercase mt-1">NOC Topology</p>
+                </div>
+                <!-- Uptime Kuma -->
+                <div class="stack-card glass-panel p-6 rounded-xl text-center group">
+                    <div class="w-12 h-12 mx-auto mb-4 flex items-center justify-center bg-cyan-500/10 rounded-lg group-hover:bg-cyan-500/20 transition">
+                        <i class="fas fa-heartbeat text-cyan-500 text-xl"></i>
+                    </div>
+                    <h4 class="font-bold text-white text-sm">Uptime Kuma</h4>
+                    <p class="text-[10px] text-slate-500 uppercase mt-1">Public Status</p>
+                </div>
+                <!-- Pingdom -->
+                <div class="stack-card glass-panel p-6 rounded-xl text-center group">
+                    <div class="w-12 h-12 mx-auto mb-4 flex items-center justify-center bg-indigo-500/10 rounded-lg group-hover:bg-indigo-500/20 transition">
+                        <i class="fas fa-bolt text-indigo-500 text-xl"></i>
+                    </div>
+                    <h4 class="font-bold text-white text-sm">My Pingdom</h4>
+                    <p class="text-[10px] text-slate-500 uppercase mt-1">External UX</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- EDUCAÇÃO & CERTIFICAÇÕES -->
+        <section id="education" class="mb-32 grid lg:grid-cols-2 gap-12">
+            <!-- Educação -->
+            <div>
+                <h2 class="text-sm font-mono text-blue-500 uppercase tracking-widest mb-2">// Acadêmico</h2>
+                <h3 class="text-3xl font-bold text-white mb-8">Formação Acadêmica</h3>
+                <div class="space-y-6">
+                    <div class="glass-panel p-6 rounded-xl border-l-2 border-blue-500">
+                        <span class="text-xs text-blue-400 font-mono">2019 — 2022</span>
+                        <h4 class="text-lg font-bold text-white mt-1">Análise e Desenvolvimento de Sistemas</h4>
+                        <p class="text-slate-400 text-sm">Universidade Unicesumar (Tecnólogo)</p>
+                    </div>
+                    <div class="glass-panel p-6 rounded-xl border-l-2 border-slate-700">
+                        <span class="text-xs text-slate-500 font-mono">2003 — 2007</span>
+                        <h4 class="text-lg font-bold text-white mt-1">Bacharelado em Administração de Empresas</h4>
+                        <p class="text-slate-400 text-sm">Universidade Iguaçu (UNIG)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certificações -->
+            <div>
+                <h2 class="text-sm font-mono text-emerald-500 uppercase tracking-widest mb-2">// Validado</h2>
+                <h3 class="text-3xl font-bold text-white mb-8">Certificações & Cursos</h3>
+                <div class="grid grid-cols-1 gap-3">
+                    <div class="flex items-center gap-4 p-4 glass-panel rounded-lg group hover:bg-slate-800/50 transition">
+                        <i class="fas fa-certificate text-blue-500 group-hover:scale-110 transition"></i>
+                        <div>
+                            <p class="text-sm font-bold text-white">ITIL® V3 Foundation</p>
+                            <p class="text-[10px] text-slate-500 uppercase">Gestão de Serviços de TI</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 p-4 glass-panel rounded-lg group hover:bg-slate-800/50 transition">
+                        <i class="fab fa-aws text-orange-400 group-hover:scale-110 transition"></i>
+                        <div>
+                            <p class="text-sm font-bold text-white">Fundamentos da Nuvem AWS</p>
+                            <p class="text-[10px] text-slate-500 uppercase">Cloud Infrastructure</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 p-4 glass-panel rounded-lg group hover:bg-slate-800/50 transition">
+                        <i class="fas fa-shield-alt text-emerald-500 group-hover:scale-110 transition"></i>
+                        <div>
+                            <p class="text-sm font-bold text-white">Segurança da Informação - LGPD</p>
+                            <p class="text-[10px] text-slate-500 uppercase">STF Educa (2024)</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 p-4 glass-panel rounded-lg group hover:bg-slate-800/50 transition">
+                        <i class="fas fa-user-lock text-cyan-400 group-hover:scale-110 transition"></i>
+                        <div>
+                            <p class="text-sm font-bold text-white">Privacy & Data Protection Essentials</p>
+                            <p class="text-[10px] text-slate-500 uppercase">Clavis Academy</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPERIENCE SECTION -->
+        <section id="experience" class="mb-32">
+            <h2 class="text-sm font-mono text-blue-500 uppercase tracking-widest mb-2">// Carreira</h2>
+            <h3 class="text-3xl font-bold text-white mb-12">Trajetória Profissional</h3>
+
+            <div class="space-y-8">
+                <div class="glass-panel p-8 rounded-2xl border-l-4 border-l-blue-500">
+                    <div class="flex flex-col md:flex-row justify-between mb-6">
                         <div>
                             <h4 class="text-2xl font-bold text-white">Allied Brasil</h4>
-                            <p class="text-blue-400 font-semibold italic">Analista de Infraestrutura e Suporte de TI PL (SRE Track)</p>
+                            <p class="text-blue-400 font-medium italic">Analista de Infraestrutura PL (SRE Track)</p>
                         </div>
-                        <div class="text-right">
-                            <span class="bg-slate-800 text-slate-400 px-4 py-1 rounded-full text-sm font-mono">2021 — PRESENT</span>
+                        <div class="mt-2 md:mt-0">
+                            <span class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full text-xs font-bold border border-blue-500/20 uppercase tracking-tighter">2021 — ATUAL</span>
                         </div>
                     </div>
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <ul class="space-y-3 text-slate-400 text-sm">
-                            <li class="flex gap-2"><span>▹</span> <span>Arquitetura de monitoramento distribuído utilizando <strong>Zabbix</strong> e <strong>Grafana</strong> para ambientes de varejo escala nacional.</span></li>
-                            <li class="flex gap-2"><span>▹</span> <span>Implementação de visibilidade APM com <strong>Dynatrace</strong> e <strong>Instana</strong>, reduzindo o <strong>MTTR</strong> em incidentes críticos.</span></li>
-                        </ul>
-                        <ul class="space-y-3 text-slate-400 text-sm">
-                            <li class="flex gap-2"><span>▹</span> <span>Gestão de servidores Linux (RHEL) e Windows em ambientes híbridos (On-premise + AWS).</span></li>
-                            <li class="flex gap-2"><span>▹</span> <span>Atuação direta em <strong>War Rooms</strong> e gestão de incidentes seguindo práticas de SRE para manter disponibilidade 24x7.</span></li>
-                        </ul>
-                    </div>
+                    <ul class="text-slate-400 space-y-3 text-sm">
+                        <li class="flex gap-3"><span class="text-blue-500 mt-1">▹</span> Sustentação de infraestrutura crítica em nuvem AWS e VMware.</li>
+                        <li class="flex gap-3"><span class="text-blue-500 mt-1">▹</span> Criação de dashboards táticos e executivos (Zabbix/Grafana).</li>
+                        <li class="flex gap-3"><span class="text-blue-500 mt-1">▹</span> Gestão de observabilidade com <strong>IBM Instana</strong> e monitoramento com <strong>Uptime Kuma</strong>.</li>
+                        <li class="flex gap-3"><span class="text-blue-500 mt-1">▹</span> Gestão de incidentes e ativos via <strong>GLPI</strong> garantindo conformidade com SLAs.</li>
+                    </ul>
                 </div>
 
-                <!-- MRINFO -->
-                <div class="glass-panel p-8 rounded-3xl bg-slate-900/30 border-transparent">
-                    <div class="flex flex-col md:flex-row justify-between mb-6 gap-2">
+                <div class="glass-panel p-8 rounded-2xl border-l-4 border-l-slate-700 opacity-80">
+                    <div class="flex flex-col md:flex-row justify-between mb-4">
                         <div>
-                            <h4 class="text-2xl font-bold text-white opacity-80">MRINFO Tecnologia</h4>
-                            <p class="text-slate-400 font-semibold italic">Ticket Manager & Analista de Monitoramento</p>
+                            <h4 class="text-xl font-bold text-white">MRINFO Tecnologia</h4>
+                            <p class="text-slate-500 font-medium italic">Gestor de Monitoramento & SLA</p>
                         </div>
-                        <div class="text-right text-slate-500">
-                            <span class="bg-slate-800/50 px-4 py-1 rounded-full text-sm font-mono">2009 — 2021</span>
+                        <div class="mt-2 md:mt-0">
+                            <span class="text-slate-600 text-xs font-mono">2009 — 2021</span>
                         </div>
                     </div>
-                    <p class="text-slate-500 text-sm mb-4 leading-relaxed">
-                        Liderança tática no fluxo de atendimento e monitoração proativa. Implementação de KPIs de atendimento e controle rigoroso de SLAs para clientes corporativos de grande porte.
-                    </p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="text-[10px] uppercase font-bold tracking-widest text-slate-500 border border-slate-800 px-2 py-1 rounded">Pingdom</span>
-                        <span class="text-[10px] uppercase font-bold tracking-widest text-slate-500 border border-slate-800 px-2 py-1 rounded">SLA Enforcement</span>
-                        <span class="text-[10px] uppercase font-bold tracking-widest text-slate-500 border border-slate-800 px-2 py-1 rounded">Knowledge Base</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Certifications Deep Dive -->
-        <section class="mb-32">
-            <h2 class="text-sm font-mono text-blue-500 uppercase tracking-tighter mb-2">// Credentials & Expertise</h2>
-            <h3 class="text-3xl font-bold text-white mb-12">Certificações & Especializações</h3>
-            
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- IBM Instana (NEW) -->
-                <div class="glass-panel p-6 rounded-2xl border-l-4 border-l-indigo-500">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="w-10 h-10 bg-indigo-500/20 text-indigo-400 rounded-lg flex items-center justify-center text-xl">
-                            <i class="fas fa-eye"></i>
-                        </div>
-                        <span class="text-[10px] font-bold text-slate-500 bg-slate-500/10 px-2 py-1 rounded">IBM CERTIFIED</span>
-                    </div>
-                    <h4 class="text-lg font-bold text-white mb-2">IBM Instana Observability</h4>
-                    <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                        Especialista em observabilidade em tempo real e monitoramento automático de microsserviços. Implementação de rastreamento distribuído e análise de dependências 1-second resolution.
-                    </p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Real-time APM</span>
-                        <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Cloud-Native</span>
-                    </div>
-                </div>
-
-                <!-- AWS -->
-                <div class="glass-panel p-6 rounded-2xl border-l-4 border-l-orange-500">
-                    <div class="flex justify-between items-start mb-4">
-                        <i class="fab fa-aws text-3xl text-orange-500"></i>
-                        <span class="text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded">VALIDATED</span>
-                    </div>
-                    <h4 class="text-lg font-bold text-white mb-2">AWS Certified Cloud Practitioner</h4>
-                    <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                        Domínio global da infraestrutura AWS, focando em segurança, conformidade e os principais serviços de computação (EC2) e armazenamento (S3).
-                    </p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Cloud Economics</span>
-                        <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Shared Responsibility</span>
-                    </div>
-                </div>
-
-                <!-- Zabbix -->
-                <div class="glass-panel p-6 rounded-2xl border-l-4 border-l-red-500">
-                    <div class="flex justify-between items-start mb-4">
-                        <i class="fas fa-microchip text-3xl text-red-500"></i>
-                        <span class="text-[10px] font-bold text-slate-500 bg-slate-500/10 px-2 py-1 rounded">SPECIALIST</span>
-                    </div>
-                    <h4 class="text-lg font-bold text-white mb-2">Zabbix Certified Specialist</h4>
-                    <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                        Especialista em configuração de monitoramento distribuído, LLD (Low Level Discovery), gestão de proxies e criação de triggers complexas para mitigação proativa.
-                    </p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Network Ops</span>
-                        <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Data Automation</span>
-                    </div>
-                </div>
-
-                <!-- Dynatrace -->
-                <div class="glass-panel p-6 rounded-2xl border-l-4 border-l-emerald-500">
-                    <div class="flex justify-between items-start mb-4">
-                        <i class="fas fa-brain text-3xl text-emerald-500"></i>
-                        <span class="text-[10px] font-bold text-slate-500 bg-slate-500/10 px-2 py-1 rounded">ASSOCIATE</span>
-                    </div>
-                    <h4 class="text-lg font-bold text-white mb-2">Dynatrace Associate</h4>
-                    <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                        Foco em Observabilidade Full-stack, análise de performance de aplicações (APM), Distributed Tracing e análise de causa raiz via Inteligência Artificial (Davis).
-                    </p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-1 rounded">AIOps</span>
-                        <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Root Cause Analysis</span>
-                    </div>
-                </div>
-
-                <!-- ITIL 4 -->
-                <div class="glass-panel p-6 rounded-2xl border-l-4 border-l-yellow-500">
-                    <div class="flex justify-between items-start mb-4">
-                        <i class="fas fa-award text-3xl text-yellow-500"></i>
-                        <span class="text-[10px] font-bold text-slate-500 bg-slate-500/10 px-2 py-1 rounded">SERVICE MGMT</span>
-                    </div>
-                    <h4 class="text-lg font-bold text-white mb-2">ITIL® 4 Foundation</h4>
-                    <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                        Gestão de serviços de TI moderna, focada em co-criação de valor e integração de fluxos de trabalho entre equipes de desenvolvimento e operações.
-                    </p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Value Streams</span>
-                        <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Agile Ops</span>
-                    </div>
-                </div>
-
-                <!-- LGPD -->
-                <div class="glass-panel p-6 rounded-2xl border-l-4 border-l-blue-500">
-                    <div class="flex justify-between items-start mb-4">
-                        <i class="fas fa-shield-halved text-3xl text-blue-500"></i>
-                        <span class="text-[10px] font-bold text-slate-500 bg-slate-500/10 px-2 py-1 rounded">COMPLIANCE</span>
-                    </div>
-                    <h4 class="text-lg font-bold text-white mb-2">LGPD & Gestão de Riscos</h4>
-                    <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                        Formação em conformidade com a Lei Geral de Proteção de Dados e mitigação de riscos em infraestruturas que processam dados sensíveis.
-                    </p>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Data Privacy</span>
-                        <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Risk Assessment</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Education -->
-        <section class="mb-32">
-            <h2 class="text-sm font-mono text-blue-500 uppercase tracking-tighter mb-8">// Academic Background</h2>
-            <div class="grid md:grid-cols-2 gap-12">
-                <div class="timeline-node">
-                    <h4 class="text-white font-bold">Análise e Desenvolvimento de Sistemas</h4>
-                    <p class="text-sm text-slate-400 italic">Unicesumar | 2019 — 2022</p>
-                </div>
-                <div class="timeline-node">
-                    <h4 class="text-white font-bold">Bacharelado em Administração de Empresas</h4>
-                    <p class="text-sm text-slate-400 italic">Unig | 2003 — 2007</p>
+                    <p class="text-slate-400 text-sm">Atuação estratégica em NOC, configuração de traps e gestão de crises para grandes ambientes corporativos.</p>
                 </div>
             </div>
         </section>
@@ -409,23 +406,81 @@
     </main>
 
     <!-- Footer -->
-    <footer class="mt-20 border-t border-slate-900 bg-slate-950/80 pt-16 pb-12 px-6">
-        <div class="max-w-7xl mx-auto flex flex-col items-center text-center">
-            <h3 class="text-2xl font-black text-white italic mb-4">ELISON ARLEY DA SILVA</h3>
-            <p class="text-slate-500 max-w-lg mb-10 text-sm leading-relaxed">
-                "A excelência operacional não é um ato, mas um hábito de automação, monitoramento e melhoria contínua."
-            </p>
-            
-            <div class="flex gap-8 mb-12">
-                <a href="mailto:elison@yahoo.com" class="text-slate-400 hover:text-blue-400 text-2xl transition"><i class="fas fa-envelope"></i></a>
-                <a href="https://linkedin.com/in/elison-arley" target="_blank" class="text-slate-400 hover:text-blue-400 text-2xl transition"><i class="fab fa-linkedin"></i></a>
+    <footer class="border-t border-slate-900 py-16 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <h3 class="text-2xl font-black text-white mb-4 tracking-tighter uppercase italic">ELISON ARLEY DA SILVA</h3>
+            <div class="flex justify-center gap-8 mb-8">
+                <a href="mailto:elison@yahoo.com" class="text-slate-500 hover:text-blue-400 transition text-2xl"><i class="fas fa-envelope"></i></a>
+                <a href="https://linkedin.com/in/elisonarley" target="_blank" class="text-slate-500 hover:text-blue-400 transition text-2xl"><i class="fab fa-linkedin"></i></a>
             </div>
-
-            <div class="text-[10px] text-slate-700 uppercase tracking-[0.3em] font-bold">
-                &copy; 2025 // Designed for SRE Performance // Rio de Janeiro, BR
-            </div>
+            <p class="text-[10px] text-slate-800 uppercase tracking-[0.4em] font-bold">Rio de Janeiro &bull; 2025</p>
         </div>
     </footer>
+
+    <script>
+        const pathIn = document.getElementById('path-inbound');
+        const pathOut = document.getElementById('path-outbound');
+        
+        function updateCharts() {
+            let pointsIn = "M0,80 ";
+            let pointsOut = "M0,90 ";
+            for (let i = 1; i <= 20; i++) {
+                pointsIn += `L${i*50},${Math.floor(Math.random() * 40) + 15} `;
+                pointsOut += `L${i*50},${Math.floor(Math.random() * 30) + 55} `;
+            }
+            pathIn.setAttribute('d', pointsIn);
+            pathOut.setAttribute('d', pointsOut);
+        }
+
+        const possibleProblems = [
+            { sev: 'DESASTRE', host: 'AWS-RDS-CLUSTER', msg: 'Disk IOPS at 98%', color: 'severity-high' },
+            { sev: 'ALTO', host: 'VPC-NAT-GW', msg: 'Packet loss > 10%', color: 'severity-average' },
+            { sev: 'MÉDIO', host: 'INSTANA-PROBE', msg: 'APM Latency Spike', color: 'bg-amber-500/20 text-amber-500' },
+            { sev: 'AVISO', host: 'AUTH-SERVER', msg: 'Auth token slow init', color: 'bg-blue-500/20 text-blue-400' }
+        ];
+
+        function addProblem() {
+            const table = document.getElementById('problem-table');
+            const prob = possibleProblems[Math.floor(Math.random() * possibleProblems.length)];
+            const row = document.createElement('tr');
+            row.className = "border-b border-slate-800/50 hover:bg-slate-800/30 transition";
+            row.innerHTML = `
+                <td class="px-4 py-3"><span class="px-2 py-1 ${prob.color} rounded text-[10px] font-bold">${prob.sev}</span></td>
+                <td class="px-4 py-3 text-slate-500">${Math.floor(Math.random() * 59)}s</td>
+                <td class="px-4 py-3">${prob.host}</td>
+                <td class="px-4 py-3">${prob.msg}</td>
+            `;
+            table.prepend(row);
+            if (table.children.length > 4) table.removeChild(table.lastChild);
+        }
+
+        const automationLogs = [
+            ">> instana: scan_complete [OK]",
+            ">> glpi: asset_audit_active",
+            ">> kuma: probe_status: UP",
+            ">> terraform: state_synced",
+            ">> ansible: play_db_optimize [DONE]",
+            ">> sla: monitoring_active (99.98%)"
+        ];
+
+        function pushLog() {
+            const container = document.getElementById('log-container');
+            const log = document.createElement('div');
+            log.className = "opacity-0 transition-opacity duration-300 " + (Math.random() > 0.7 ? "text-blue-400" : "");
+            log.innerText = automationLogs[Math.floor(Math.random() * automationLogs.length)];
+            container.prepend(log);
+            setTimeout(() => log.classList.remove('opacity-0'), 100);
+            if (container.children.length > 8) container.removeChild(container.lastChild);
+        }
+
+        setInterval(updateCharts, 3000);
+        setInterval(addProblem, 7000);
+        setInterval(pushLog, 4500);
+
+        updateCharts();
+        addProblem();
+        pushLog();
+    </script>
 
 </body>
 </html>
